@@ -8,7 +8,7 @@ const SubmitQuiz = async (req, res) => {
 
     const allQuestions = await Question.find();
 
-    if (answers.length !== allQuestions.length) {
+    if (answers.length===0) {
       return res.status(400).json({ message: "Answers count mismatch" });
     }
 
@@ -30,7 +30,8 @@ const SubmitQuiz = async (req, res) => {
     const result = await Result.create({
       user: userId,
       answers: detailedAnswers,
-      score
+      score,
+      quiz:allQuestions[0]._id
     });
 
     res.status(200).json({ message: 'Quiz submitted successfully', score, result });
