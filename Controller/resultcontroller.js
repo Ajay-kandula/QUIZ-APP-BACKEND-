@@ -49,10 +49,6 @@ const SubmitQuiz = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-module.exports = { SubmitQuiz, ReviewQuiz };
-
-
 const ReviewQuiz = async (req, res) => {
   try {
     const userId = req.user.userId;
