@@ -1,7 +1,5 @@
 const Question = require('../Model/quiz');
 const Result = require('../Model/Result');
-
-const Question = require('../Model/quiz');
 const Result = require('../Model/Result');
 
 const SubmitQuiz = async (req, res) => {
