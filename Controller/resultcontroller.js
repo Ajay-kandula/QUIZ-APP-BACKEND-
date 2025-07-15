@@ -1,6 +1,9 @@
 const Question = require('../Model/quiz');
 const Result = require('../Model/Result');
 
+const Question = require('../Model/quiz');
+const Result = require('../Model/Result');
+
 const SubmitQuiz = async (req, res) => {
   try {
     const { answers } = req.body;
@@ -8,21 +11,24 @@ const SubmitQuiz = async (req, res) => {
 
     const allQuestions = await Question.find();
 
-    if (answers.length===0) {
-      return res.status(400).json({ message: "Answers count mismatch" });
+  
+    if (!Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ message: "No answers submitted" });
     }
 
     let score = 0;
     const detailedAnswers = [];
+    allQuestions.forEach((q) => {
+      const userAnswer = answers.find(a => a.questionId === q._id.toString());
 
-    allQuestions.forEach((q, index) => {
-      const selectedAnswer = answers[index]?.selectedanswer;
+      const selectedAnswer = userAnswer ? userAnswer.selectedanswer : null;
       const isCorrect = selectedAnswer === q.correctAnswer;
+
       if (isCorrect) score++;
 
       detailedAnswers.push({
         questionId: q._id,
-        selectedanswer: selectedAnswer,
+        selectedanswer: selectedAnswer || "Not Answered",
         isCorrect
       });
     });
@@ -31,15 +37,23 @@ const SubmitQuiz = async (req, res) => {
       user: userId,
       answers: detailedAnswers,
       score,
-      quiz:allQuestions[0]._id
+      quiz: allQuestions[0]._id 
     });
 
-    res.status(200).json({ message: 'Quiz submitted successfully', score, result });
+    res.status(200).json({
+      message: 'Quiz submitted successfully',
+      score,
+      result
+    });
 
   } catch (err) {
+    console.error("SubmitQuiz error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
+
+module.exports = { SubmitQuiz, ReviewQuiz };
+
 
 const ReviewQuiz = async (req, res) => {
   try {
