@@ -5,6 +5,9 @@ const Result = require('../Model/Result');
 const SubmitQuiz = async (req, res) => {
   try {
     const { answers } = req.body;
+    if(!req.user || !req.user.userId){
+      return res.status(401).json({message:"Unaurhorized user not found in  request"})
+    }
     const userId = req.user.userId;
 
     const allQuestions = await Question.find();
@@ -51,6 +54,9 @@ const SubmitQuiz = async (req, res) => {
 };
 const ReviewQuiz = async (req, res) => {
   try {
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "Unauthorized: user not found in request" });
+    }
     const userId = req.user.userId;
 
     const result = await Result.findOne({ user: userId }).populate('user').populate('quiz');
