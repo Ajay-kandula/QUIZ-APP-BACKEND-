@@ -20,7 +20,7 @@ const SubmitQuiz = async (req, res) => {
     let score = 0;
     const detailedAnswers = [];
     allQuestions.forEach((q) => {
-      const userAnswer = answers.find(a => a.questionId === q._id.toString());
+      const userAnswer = answers.find(a => a.questionid === q._id.toString());
 
       const selectedAnswer = userAnswer ? userAnswer.selectedanswer : null;
       const isCorrect = selectedAnswer === q.correctAnswer;
@@ -28,7 +28,7 @@ const SubmitQuiz = async (req, res) => {
       if (isCorrect) score++;
 
       detailedAnswers.push({
-        questionId: q._id,
+        questionid: q._id,
         selectedanswer: selectedAnswer || "Not Answered",
         isCorrect
       });
