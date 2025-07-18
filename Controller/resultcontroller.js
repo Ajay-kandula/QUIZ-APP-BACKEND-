@@ -68,7 +68,7 @@ const ReviewQuiz = async (req, res) => {
     const allQuestions = await Question.find();
 
     const review = result.answers.map((a) => {
-      const question = allQuestions.find(q => q._id.toString() === a.questionId.toString());
+      const question = allQuestions.find(q => q._id.toString() === a.questionid.toString());
       return {
         question: question?.question,
         selectedanswer: a.selectedanswer,
