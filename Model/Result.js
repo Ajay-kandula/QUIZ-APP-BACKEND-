@@ -8,6 +8,7 @@ const answerschema = new mongoose.Schema({
 
 const resultSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  quiz: { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' },
   answers: [answerschema],
   score: { type: Number, required: true }
 }, { timestamps: true });
