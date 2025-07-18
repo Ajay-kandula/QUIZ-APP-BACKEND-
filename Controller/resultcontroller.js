@@ -57,9 +57,10 @@ const ReviewQuiz = async (req, res) => {
     if (!req.user || !req.user.userId) {
       return res.status(401).json({ message: "Unauthorized: user not found in request" });
     }
+
     const userId = req.user.userId;
 
-    const result = await Result.findOne({ user: userId }).populate('user').populate('quiz');
+    const result = await Result.findOne({ user: userId }).populate('user');
 
     if (!result) {
       return res.status(404).json({ message: "Result not found" });
@@ -67,20 +68,25 @@ const ReviewQuiz = async (req, res) => {
 
     const allQuestions = await Question.find();
 
-    const review = result.answers.map((a) => {
-      const question = allQuestions.find(q => q._id.toString() === a.questionid.toString());
-      return {
-        question: question?.question,
-        selectedanswer: a.selectedanswer,
-        correctAnswer: question?.correctAnswer,
-        isCorrect: a.isCorrect
-      };
-    });
+    const review = result.answers
+      .filter((ans) =>
+        allQuestions.some(q => q._id.toString() === ans.questionid.toString())
+      )
+      .map((ans) => {
+        const question = allQuestions.find(q => q._id.toString() === ans.questionid.toString());
+        return {
+          question: question?.question,
+          selectedanswer: ans.selectedanswer,
+          correctAnswer: question?.correctAnswer,
+          isCorrect: ans.isCorrect
+        };
+      });
 
     res.json({ answers: review });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 module.exports = { SubmitQuiz, ReviewQuiz };
